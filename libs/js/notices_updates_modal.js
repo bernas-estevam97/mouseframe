@@ -9,7 +9,7 @@ let closeBtn = document.getElementById("closeModal");
 let modalNews = document.getElementById("modalNews"); 
 let showNews = document.getElementById("showNews");
 
-const CURRENT_VERSION = "1.0.0 standalone";
+// const CURRENT_VERSION = "1.0.0 standalone";
 
 document.querySelectorAll('[data-version]').forEach(el => {
   el.textContent = CURRENT_VERSION;
