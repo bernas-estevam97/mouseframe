@@ -8,443 +8,543 @@
     <link rel="shortcut icon" href="../libs/img/mus-musculus.ico">
     <link rel="stylesheet" href="../libs/fontawesome/css/all.css">
     <link rel="stylesheet" href="../libs/css/bootstrap.min.css">
-    <title>MouseFrame - Analysis (new)</title>
+    <title>MOUSEFRAME - Analysis</title>
+
+    <style>
+        /* General Layout & Components */
+        .card.bg-dark.text-white { border-radius: 1rem; }
+        .links-menu { list-style-type: none; padding-left: 0; }
+        .nav-list { padding-left: 0; margin-bottom: 0; }
+        .nav-item { list-style-type: none; }
+        .nav-link { color: #000; }
+        .nav-link:hover, .nav-link:focus { color: #000 !important; }
+        
+        /* Upload & Image Resizing Area */
+        .label-upload { font-size: 1.1em; }
+        #uploadImage { display: none; }
+        #removeImage { cursor: pointer; }
+        .image-resizing-h3 { font-size: 2rem; margin: 0 0 10px 0; }
+        .image-resize small { display: block; margin-top: 10px; margin-bottom: 20px; color: #555; }
+        .image-help li { font-size: 1.2rem; text-align: left; }
+        .span-caution { color: red; }
+        #mySlider { padding: 0; }
+        
+        /* Canvas & Points Area */
+        .shortcut-info { margin-bottom: 5px; font-weight: bold; }
+        .mouse-scheme-info { width: 366px; }
+        #otherInfo li { margin-top: 10px; }
+        .p-tag-label-biorender { font-size: 1em; margin-bottom: 5px; }
+        .biorender-ref-image img { width: 254px; height: 251px; }
+        .title-remove-groups { border-top: 3px double #ccc; padding-top: 10px; }
+        .change-dim-h2 { font-size: 1.5rem; }
+        #sizeInput { width: 100px; }
+        
+        /* Measurements & Tables */
+        .saved-distances h5 { padding-top: 10px; }
+        .saved-distances .last-li { margin-bottom: 10px; }
+        .save-values-h4 { font-size: 1.5em; border-top: 2px solid rgba(0,0,0,.125) !important; padding-top: 20px; }
+        .save-info { font-size: 1em; }
+        .table-results h3 { text-decoration: underline; }
+        .select-options h4 { text-align: center; }
+        .select-options h2 { margin-bottom: 20px; }
+    </style>
 </head>
 <body>
-  <div class="resolution-unsupported">
-    <section class="vh-100 gradient-custom">
-        
-      <div class="container py-5 h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-          <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-            <div class="card bg-dark text-white" style="border-radius: 1rem;">
-              <div class="card-body p-5 text-center">
+  <div class="wrapper">
+    <main class="content">
+      
+      <div class="resolution-unsupported">
+        <section class="vh-100 gradient-custom">
+          <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+              <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card bg-dark text-white">
+                  <div class="card-body p-5 text-center">
+                    <div class="mb-md-5 mt-md-4">
+                      <h2 class="fw-bold mb-2 text-uppercase">Unsupported resolution</h2>
+                      <p>This resolution and lower ones are not supported by this application.</p>
+                      <p>Change to a bigger resolution to use the app <br>(>1100px of width)</p>
+                      <p>You can view other pages such as:</p>
+                      <ul class="links-menu">
+                        <li class="unsp-link"><a href="./info.html">Tool Information</a></li>
+                        <li class="unsp-link"><a href="./contact.html">Contact</a></li>
+                      </ul>
+                      <img src="../libs/img/cartoon-mouse.png" alt="Cartoon Mouse">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> 
+        </section>
+      </div>
+
+      <p id="version">v<span data-version></span></p>
+      
+      <header>
+        <h1>
+          <img class="image-one" src="../libs/img/mouse.png" alt="Mouse Icon">
+          <img class="image-two" src="../libs/img/mouse-paws.png" alt="Mouse Paws Icon">
+          &nbsp;&nbsp;&nbsp;MOUSEFRAME - <i>Mus musculus</i> gait/footprint analysis
+        </h1>
+        <ul class="nav-list">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">More</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./info.html">Information</a></li>
+              <li><a class="dropdown-item" href="./contact.html">Contact</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="https://abcri.pt/" target="_blank">ABC-RI</a></li>
+            </ul>
+          </li>
+        </ul>
+      </header>
+
+      <section class="modal-news" id="modalNews">
+        <h2>🆕 What's new in version <span data-version></span>?</h2>
+        <ul>
+          <li>Fixed visual bugs for PC resolutions.</li>
+          <li>This app is not a mobile app. If the resolution of your device is below a certain level, the analysis page (home page) of the application won't show its details since it is not compatible.</li>
+          <li>Added function to save values and use them without app refresh, in this way not restarting your image progress.</li>
+          <li>The saved values require an image size of which the measurement was saved in order to keep track of right cm to pixel conversions and avoid measurement usage in wrong resolutions.</li>
+          <li>All saved measurements are filtered by user, so you won't see values saved from other users.</li>
+          <li>Added zoom toggle function, see information below.</li>
+        </ul>
+        <button class="new-btn-close-modal" id="closeModal">Close</button>
+      </section>
     
-                <div class="mb-md-5 mt-md-4">
-                  <h2 class="fw-bold mb-2 text-uppercase">Unsupported resolution</h2>
-                  <p>This resolution and lower ones are not supported by this application.</p>
-                  <p>Change to a bigger resolution to use the app <br>(>1100px of width)</p>
-                  <p>You can view other pages such as:</p>
-                  <ul style="list-style-type: none; padding-left: 0;">
-                    <li class="unsp-link"><a onclick="handleNavigation('./info.html')">Tool Information</a></li>
-                    <li class="unsp-link"><a onclick="handleNavigation('./contact.html')">Contact</a></li>
-                  </ul>
-                  <img src="../libs/img/cartoon-mouse.png">
+      <div class="container-full">
+        <div class="requirements">
+          <h3>Brief information and requirements</h3>
+          <ul>
+            <li>Only image file formats are supported (.tiff formats are not yet supported).</li>
+            <li>In order to draw dots to perform the calculations, this is done in canvas. The canvas as the name implies is a surface where the user can draw. In this case, only dots of different sizes and colors can be added.</li>
+            <li>All the functionalities are shown after successful image upload.</li>
+            <li>For more information on this application and to see how the calculations are made for each measurement, check the <a class="info-page" href="./info.html">info</a> page.</li>
+            <li>Check <button class="show-updates" id="showNews">News and updates</button> for this version.</li>
+          </ul>
+          <p id="userResolution"><strong>Your resolution is:</strong> </p>
+          <a class="version-button" href="./choose_version.html">Change app version</a><br>
+        </div>
+
+        <div class="img-selection">
+          <div class="img-upload">
+            <label class="label-upload" for="uploadImage">Upload your image here:</label>
+            <input type="file" id="uploadImage" name="img" accept="image/*">
+            <input class="upload-btn" type="button" value="Select Image"/>
+            <button class="reset-button" type="button" id="removeImage" aria-label="Remove Image"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+          <div id="imgContainer" class="image-container">
+            <canvas id="canvas"></canvas>
+          </div>
+        </div>
+
+        <div id="canvasUpload" class="image-info">
+          <b><i class='fa-regular fa-image'></i> name:&nbsp;</b><span id="imageName"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <b><i class='fa-solid fa-image'></i> default resolution:&nbsp;</b> <span id="imageUploadedWidth"></span>x<span id="imageUploadedHeight"></span>
+        </div>
+
+        <div class="bottom-functions">
+          <div class="image-resize" id="imageEdit">
+            <h3 class="image-resizing-h3">
+              <i class="fa-solid fa-left-right"></i>&nbsp;Image resizing&nbsp;
+              <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseContent" aria-label="Help with resizing">
+                <i class="fa-solid fa-circle-question"></i>
+              </button>:
+            </h3>
+            <small>💡 Press <kbd>Z</kbd> to enter Zoom Mode. Then use <kbd>+</kbd>, <kbd>-</kbd>, or <kbd>0</kbd> to resize the image or use the slider underneath.</small>
+            
+            <div class="collapse" id="collapseContent">
+              <ul class="image-help">
+                <li>Be sure to resize to your ideal size before working on any measurements.</li>
+                <li>By resizing you delete any progress done on the current image size.</li>
+                <li>If the image has a 1 cm scale to be converted to pixels it can be safely resized since you can measure the resized 1cm line and use it.</li>
+                <li>If the image does not have a 1cm line and you do not have a saved value for the new resized image resolution, it is recommended not to resize as you will not be able to get a cm to px correct conversion value.</li>
+                <li>You can use the resize function by dragging the scroll or by clicking a scrollbar position or even use your arrow keys after clicking the scrollbar pointer.</li>
+                <li>You can also use the zoom mode if you prefer to do so.</li>
+              </ul>
+              <span class="span-caution"><b>&#9888;</b></span> <b><u>Caution:</u></b>&nbsp;Any data in the table below will be removed along with the dots marked in the image when resizing!
+            </div>
+            
+            <div class="slider-container">
+              <input type="range" min="1" max="100" value="100" id="mySlider" class="slider">
+            </div>
+            <p id="currentImgSize" name="image_size"></p>
+          </div>  
+      
+          <div id="accordion">
+            
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button id="btnLinkOne" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                  Mark/Draw and delete points
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                  <div class="buttons-plus-options">
+                    <div class="mouse-scheme">
+                      <img class="mouse-image" src="../libs/img/mouse-scheme-new.png" title="Mouse (dorsal, anatomical position) from biorender.com" alt="Mouse Scheme">
+                      <button class="marker" type="button" id="redCircleLeft">L</button>
+                      <button class="marker" type="button" id="redCircleRight">R</button>
+                      <button class="marker" type="button" id="blueCircleLeft">L</button>
+                      <button class="marker" type="button" id="blueCircleRight">R</button>
+                      
+                      <div class="btn-toggle">Pause all:&nbsp;<button class="btn-tg" type="button" id="toggleInactive" aria-label="Pause All"><i class="fa-solid fa-circle-stop"></i></button></div>
+                      <div class="btn-reset">Reset all:&nbsp;<button class="btn-rs" type="button" id="resetCanvas" aria-label="Reset Canvas"><i class="fa-solid fa-eraser"></i></button></div>
+                      
+                      <div class="hotkeys-legend">
+                        <div class="shortcut-info"><i class="fa-solid fa-keyboard"></i>&nbsp;shortcuts:</div>
+                        <div><img src="../libs/img/letter-q.png" alt="Q Key">: Red L</div>
+                        <div><img src="../libs/img/letter-w.png" alt="W Key">: Red R</div>
+                        <div><img src="../libs/img/letter-a.png" alt="A Key">: Blue L</div>
+                        <div><img src="../libs/img/letter-s.png" alt="S Key">: Blue R</div>
+                        <div><img src="../libs/img/letter-r.png" alt="R Key">: Reset all</div>
+                        <div><img src="../libs/img/letter-p.png" alt="P Key">: Pause all</div>
+                      </div>
+                      
+                      <div class="under-image">
+                        Mouse scheme information <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#otherInfo" aria-label="Mouse Scheme Info"><i class="fa-solid fa-circle-info"></i></button>: 
+                      </div>
+                      <div class="collapse mouse-scheme-info" id="otherInfo">
+                        <ul>
+                          <li>You can activate button function by either clicking the respective button in each of the mouse's paws or by using a keyboard shortcut referenced above</li>
+                          <li>The "Pause all" button/function will stop any ongoing function to add points</li>
+                          <li>The "Reset all" button/function will clear all your points in your selected image above, in simple terms it will reset all your work done above</li>
+                        </ul>
+                        <p class="p-tag-label-biorender">Mouse image adapted from:</p>
+                        <a class="biorender-ref-image" href="https://www.biorender.com/" target="_blank"><img src="../libs/img/bio-render.png" alt="Biorender Reference"></a><br>
+                      </div>
+                    </div>
+                    
+                    <div class="right-side-options">
+                      <div class="info-active-function" id="activeFunction"></div>
+                      
+                      <div class="point-removal">
+                        <h4>Remove a point of choice&nbsp;<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRemovePointHelp" aria-label="Help removing points"><i class="fa-solid fa-circle-info"></i></button>:</h4>
+                        <div class="collapse" id="collapseRemovePointHelp">
+                          <p>Instructions for manual removal:</p>
+                          <ul>
+                            <li>Your points appear below as you add them.</li>
+                            <li>Select your desired point and two options for removal will appear:
+                              <ul>
+                                <li><u>Remove:</u> Delete the point and update the count without the removed point.</li>
+                                <li><u>Replace:</u> Remove the point, but it requires a single new point input by the user to use as replacement (many buttons will be disabled when the replacing function is active). </li>
+                              </ul>
+                            </li>
+                          </ul>
+                        </div>
+                        <label for="selectPoint">Add points, see them here <i class="fa-solid fa-right-long"></i>&nbsp;</label>
+                        <select id="selectPoint" class="custom-select"></select>
+                        &nbsp;<button id="removePoint">Remove</button>
+                        <button id="replacePoint">Replace</button>
+                      </div>
+                      
+                      <div class="group-removal">
+                        <h4 class="title-remove-groups">Remove a group of points:&nbsp;<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRemoveGroupHelp" aria-label="Help removing groups"><i class="fa-solid fa-circle-info"></i></button>:</h4>
+                        <div class="collapse" id="collapseRemoveGroupHelp">
+                          <p>Information for group removal:</p>
+                          <ul>
+                            <li>As an alternative to removing or replacing a point you can also remove an entire group of points. They are divided in 4 groups:
+                              <ul>
+                                <li>Red left</li>
+                                <li>Red right</li>
+                                <li>Blue left</li>
+                                <li>Blue right</li>
+                              </ul>
+                            </li>
+                            <li>The points will be removed from the image by simply clicking one of the four buttons below.</li>
+                          </ul>
+                        </div>
+                        <div class="remove-groups">
+                          <div class="red-remove-points">
+                            <button class="button" type="button" id="deleteAllCircleRedLeft">Delete Red L group</button>
+                            <button class="button" type="button" id="deleteAllCircleRedRight">Delete Red R group</button>
+                          </div>
+                          <div class="blue-remove-points">
+                            <button class="button" type="button" id="deleteAllCircleBlueLeft">Delete Blue L group</button>
+                            <button class="button" type="button" id="deleteAllCircleBlueRight">Delete Blue R group</button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="point-size">
+                        <h2 class="change-dim-h2">Change dimensions of your marking points:</h2>
+                        <input id="sizeInput" type="number" min="1" step="1" placeholder="Point size in px...">
+                        <button id="changeS">Change</button>
+                        <button id="resetS" aria-label="Reset Size"><i class="fa-solid fa-rotate-left"></i></button>
+                        <p> Default point radius size is set to 4px</p>
+                        <p id="dynamicSize"></p>
+                        <p><strong>Note:</strong>&nbsp;When deleting buttons make sure you don't change radius size. Only delete points when working with a fixed size</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button id="btnLinkTwo" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  Measure how many pixels in a centimeter
+                </button>
+              </h2>   
+              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                  <div class="saved-distances" id="savedDistance">
+                    <h4>Define how many pixels are in a centimeter:</h4>
+                    
+                    <h5>1. Measuring the 1cm (optional according to availability)</h5>
+                    <ul>
+                      <li>If there is a drawn line with the length of 1cm, measure it in pixels here by clicking "+" below.</li>
+                      <li>The "+" button activates the function to add two new points to the image above, delimiting the 1cm line in it.</li>
+                      <li>After adding to points delimiting the 1cm line, click the ruler icon to measure that distance in pixels.</li>
+                      <li class="last-li">The result will appear below.</li>
+                    </ul>
+                    <p id="addMeasureInfo"></p>
+                    <button id="measureButton" class="measure" aria-label="Add Measure Point"><i class="fa-solid fa-plus"></i></button>
+                    <button id="resetMeasure" aria-label="Reset Measure Points"><i class="fa-solid fa-eraser"></i></button>
+                    <button id="measureDistance" aria-label="Calculate Distance"><i class="fa-solid fa-ruler"></i></button>
+                    
+                    <h5>2. Manually input a value or use previous saved values</h5>
+                    <p>Manually input known value of pixels in 1 cm or use saved values (choose only one of the options and click use):</p>
+                    <input id="pixelsInCmMan" type="number" pattern="^\d+(\.\d+)*$" placeholder="Px in cm...">&nbsp;OR&nbsp;
+                    <select id="savedChoices" form="savedDistancesForm" class="custom-select">
+                      <option value="None" disabled selected>Select a value</option>
+                      <!-- <option id="1" value="[SAVED_VALUE_PLACEHOLDER]">[SAVED_VALUE_PLACEHOLDER] - [IMAGE_SIZE_PLACEHOLDER]</option> -->
+                    </select>
+                    <button id="manualUse">Use</button>
+                    <button id="resetManual" aria-label="Reset Manual Input"><i class="fa-solid fa-rotate-left"></i></button>
+                    
+                    <h5>Measurement result</h5>
+                    <div class="measure-info">
+                      <div id="measureIntro">Value:</div>&nbsp;&nbsp;
+                      <input id="measureToCm" value="" size="5" readonly>px equals 1 cm.
+                    </div>
+                    
+                    <h4 class="save-values-h4">Save section</h4>
+                    <p>If you have a value you want to save, use the fields below to add the value in pixels and the size of the image you took the value from (both fields are required to save).</p>
+                    <p class="save-info"><b><i class="fa-solid fa-triangle-exclamation"></i>&nbsp;Important:</b> Saving both these values allows for better practice and prevents the usage of such values in different sized images which is not correct.</p>
+                    
+                    <form id="savedDistancesForm">
+                      <ol>
+                        <li>Value(px): <input type="text" name="saved_distance_value" id="saveDistance" maxlength="8" placeholder="Save value..." required></li>
+                        <li>Image size in which the value is being saved: <input type="text" name="image_size" id="imgSizeInfo" maxlength="10" placeholder="E.g. 1920x1080" required></li>
+                      </ol>
+                      <button class="save-button" id="saveDistanceButton" type="button" aria-label="Save Distance">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                      </button> 
+                    </form>
+                    <div id="messageSave"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                  Data management
+                </button>
+              </h2>
+              <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordion">
+                <div class="accordion-body">
+                  <div class="data-management" id="showData">
+                    
+                    <div class="table-section">
+                      <div class="table-results">
+                        <h3>Data results Table</h3>
+                        <table id="table" class="table table-bordered">
+                          <thead id="tableH">
+                            <tr>
+                              <td colspan="5" id="titleImage"><b>Table ID: </b></td>
+                            </tr>
+                            <tr id="idRow">
+                              <th>Entry Number</th>
+                              <th>Points</th>
+                              <th>Measurement type</th>
+                              <th id="valuePx">Value(px)</th>
+                              <th id="valueCm">Value(cm)</th>
+                            </tr>
+                          </thead>
+                          <tbody id="tbody"></tbody>
+                        </table>
+                        <div id="imageResizeTableWarning"></div>
+                      </div>
+                      <br>
+                      <label for="upload-excel"><i class="fa-solid fa-circle-info"></i> Add an excel file to add your table to one of your own excel files (the table is added in a new sheet) and then click the export button below.</label>
+                      <input class="input-excel" name="excel-file" type="file" id="upload-excel" accept=".xlsx, .xls" />
+                      <button id="resetUpload">Remove</button><br><br>
+                      
+                      <label for="exportEx"><i class="fa-solid fa-circle-info"></i> Simply click the below button, without any provided excel, to export your table to a new excel file with the table name provided on the right.</label><br>
+                      <button name="button-export" id="exportEx"> Export to excel file </button><br><br>
+                      
+                      <label for="copyTable"><i class="fa-solid fa-circle-info"></i> Copy the table and add it to a file of your preference.</label><br>
+                      <button name="copy-table" id="copyTable">Copy Table to Clipboard</button>
+                    </div>
+                    
+                    <div class="select-options">
+                      <h4>Table management options</h4>
+                      <div class="table-id">
+                        <p>1. Insert table ID:</p>
+                        <div class="entry-table-id">
+                          <input id="entryTableID" placeholder="Enter an ID for table">&nbsp;
+                          <button id="removeTableIdButton" aria-label="Reset Table ID"><i class="fa-solid fa-rotate-left"></i></button>
+                        </div>
+                      </div>
+                      
+                      <div id="footstepsBeginning">
+                        <label for="footstepStart">2. First set of footsteps:</label>
+                        <select name="beginning" id="footstepStart" class="custom-select">
+                          <option value="None" selected>Select one</option>
+                          <option value="Left">Left</option>
+                          <option value="Right">Right</option>
+                        </select><br>
+                        
+                        <section class="modal-help-ae" id="modalHelpAddEntries" style="display: none;">
+                          <h2><b><u>Help</u></b> - What does Add Entries option do?</h2>
+                          <ul>
+                            <li>&#x27A3; &nbsp; This function allows users to calculate distances between the points marked above.</li>
+                            <li>&#x27A3; &nbsp; In contrast with the "Add entries with average" function, this option does not require the pixels in 1 cm measurement (if the value is available it will still convert px to cm). If the user only wants to know the distance in pixels this option may suffice.</li>
+                            <li>&#x27A3; &nbsp; This function does not require a full set of marked dots to perform all available measurements, but it will throw an alert that some measurements could not be measured for the lack of certain dots.</li>
+                            <li>&#x27A3; &nbsp; Overall, this measurement type is less sensitive and great for when the user only wants a few set of measurements and not all.</li>
+                          </ul>
+                          <button class="new-btn-close-modal" id="closeModalHelpAddEntries">Close</button>
+                        </section>
+                        
+                        <section class="modal-help-aea" id="modalHelpAddEntriesAverage" style="display: none;">
+                          <h2><b><u>Help</u></b> - What does Add Entries with Average do?</h2>
+                          <ul>
+                            <li>&#x27A2; &nbsp; This function calculates a complete set of measurements, converts the values to cm and displays mean values for each measurement in cm.</li>
+                            <li>&#x27A2; &nbsp; "Add entries with average" requires the px in 1 cm measurement beforehand.</li>
+                            <li>&#x27A2; &nbsp; It also needs all marked dots in the correct spots to perform all the available calculations.</li>
+                            <li>&#x27A2; &nbsp; This method/function is the most complete and sensitive when it comes to data retrieval.</li>
+                          </ul>
+                          <button class="new-btn-close-modal" id="closeModalHelpAddEntriesAverage">Close</button>
+                        </section>
+                        
+                        <div class="add-buttons">
+                          <div class="add-all-block">
+                            <button id="addAll" type="submit">Add Entries</button>
+                            <button id="openAe" type="button" aria-label="Help with Add Entries"><i class="fa-solid fa-circle-question"></i></button>
+                          </div>
+                          <div class="add-all-average-block">
+                            <button id="addAllAverage" type="submit">Add Entries with average</button>
+                            <button id="openAea" type="button" aria-label="Help with Average Entries"><i class="fa-solid fa-circle-question"></i></button>
+                          </div><br>
+                        </div>
+                      </div>
+                      
+                      <div class="remove-by-entries" id="removeByEntries">
+                        <h5>Removal section:</h5>
+                        <p>Remove by entry number or remove all &#8628;</p>
+                        <input id="entryNumber" placeholder="Entry nº" size="3" maxlength="3">
+                        <button id="removeEntry" aria-label="Remove specific entry"><i class="fa-solid fa-trash"></i></button>
+                        <button id="removeAllEntries">Remove all &nbsp;<i class="fa-solid fa-trash-can"></i></button>
+                      </div>
+                      
+                      <div class="remove-by-measurement" id="removeByMeasurement">
+                        <p>Remove by measurement type &#8628;</p>
+                        <select name="measurement" id="removeMeasurement" class="custom-select">
+                          <option value="Overlap Left" selected>Overlap Left</option>
+                          <option value="Overlap Right" selected>Overlap Right</option>
+                          <option value="Stride length left front">Stride length left front</option>
+                          <option value="Stride length left hind">Stride length left hind</option>
+                          <option value="Stride length right front">Stride length right front</option>
+                          <option value="Stride length right hind">Stride length right hind</option>
+                          <option value="Stride Width Front">Stride Width Front</option>
+                          <option value="Stride Width Hind">Stride Width Hind</option>
+                        </select>
+                        <button id="removeByMeasurementButton">Remove</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div> 
-    </section>
-  </div>
-  <p id="version">v<span data-version></span></p>
-    <header>
-        <h1><img class="image-one" src="../libs/img/mouse.png"><img class="image-two" src="../libs/img/mouse-paws.png">&nbsp&nbsp&nbspMOUSEFRAME - <i>Mus musculus</i> gait/footprint analysis</h1>
-        <li class="nav-item dropdown" style="list-style-type: none;">
-          <a class="nav-link dropdown-toggle" style="color: #000;" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            More
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" onclick="handleNavigation('./info.html')">Information</a></li>
-            <li><a class="dropdown-item" onclick="handleNavigation('./contact.html')">Contact</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href='https://abcri.pt/' target="_blank">ABC-RI</a></li>
-          </ul>
-        </li>
-        
-    </header>
-    <section class="modal-news" id="modalNews">
-      <h2>🆕 What's new in version <span data-version></span>?</h2>
-      <ul>
-        <li>Fixed visual bugs for PC resolutions.</li>
-        <li>This app is not a mobile app. If the resolution of your device is below a certain level, the analysis page (home page) of the application won't show its details since it is not compatible.</li>
-        <li>Added function to save values and use them without app refresh, in this way not restarting your image progress.</li>
-        <li>The saved values require an image size of which the measurement was saved in order to keep track of right
-          cm to pixel conversions and avoid measurement usage in wrong resolutions.</li>
-        <li>All saved measurements are filtered by user, so you won't see values saved from other users.</li>
-        <li>Added zoom toggle function, see information below.</li>
-      </ul>
-      <button class="new-btn-close-modal" id="closeModal">Close</button>
-    </section>
-    
-    <!-- <div class="overlay hidden"></div> -->
-    
-    <div class="container-full">
-        <!-- <div class="left-part"> -->
-        <div class="requirements">
-            <h3>Brief information and requirements</h3>
-            <ul>
-                <li>Only image file formats are supported (.tiff formats are not yet supported).</li>
-                <li>In order to draw dots to perform the calculations, this is done in canvas. The canvas as the name implies is a surface where the user can draw. In this case, only dots of different sizes and colors can be added.</li>
-                <li>All the functionalities are shown after successful image upload.</li>
-                <li>For more information on this application and to see how the calculations are made for each measurement, check the<a class="info-page" onclick="handleNavigation('./info.html')">info</a>page.</li>
-                <li>Check <button class="show-updates" id="showNews">News and updates</button> for this version.</li>
-            </ul>
-            <!-- <p id="loginName">Welcome to Mouseframe! <b><u></u></b></p> -->
-            <p id="userResolution"></p><a class="version-button" onclick="handleNavigation('./choose_version.html')">Change app version</a><br>
-        </div>
-    <!-- </div> -->
-    <!-- <div class="right-part"> -->
-      <div class="img-selection">
-        <div class="img-upload">
-            <label for="img" style="font-size: 1.1em;">Upload your image here:</label>
-            
-            <input type="file" id="uploadImage" name="img" alt="Upload" accept="image/*" onchange="loadFile(event);" style="display:none;">
-            <!-- <input type="file" onchange="previewFile();"> -->
-            <input class="upload-btn" type="button" value="Select Image" onclick="document.getElementById('uploadImage').click();" style="cursor: pointer;"/>
-            <button class="reset-button" type="button" id="removeImage" onclick="resetFile();"><i class="fa-solid fa-trash-can"></i></button>
-
-            
-            
-            <!-- <span id="imageUploadedSize"></span> -->
-        </div>
-        <div id="imgContainer" class="image-container">
-          <canvas id="canvas"></canvas>
-        </div>
-
       </div>
-      <div id="canvasUpload" class="image-info"><b><i class='fa-regular fa-image'></i> name:&nbsp</b><span id="imageName"></span>&nbsp&nbsp&nbsp&nbsp&nbsp<b><i class='fa-solid fa-image'></i> default resolution:&nbsp</b> <span id="imageUploadedWidth"></span>x<span id="imageUploadedHeight"></span></div>
-    <div class="bottom-functions">
-      <div class="image-resize" id="imageEdit">
-        <h3 style="font-size: 2rem; margin:0 0 10px 0;"><i class="fa-solid fa-left-right"></i>&nbspImage resizing&nbsp<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseContent">
-          <!-- <i class="fa-solid fa-caret-down"></i> --><i class="fa-solid fa-circle-question"></i>
-        </button>:</h3>
-        <small style="display: block; margin-top: 10px; margin-bottom:20px; color: #555;">
-        💡  Press <kbd>Z</kbd> to enter Zoom Mode. Then use <kbd>+</kbd>, <kbd>-</kbd>, or <kbd>0</kbd> to resize the image or use the slider underneath.
-          </small>
-        <div class="collapse" id="collapseContent">
-          <ul>
-            <li style="font-size: 1.2rem; text-align: left;">Be sure to resize to your ideal size before working on any measurements.</li>
-            <li style="font-size: 1.2rem; text-align: left;">By resizing you delete any progress done on the current image size.</li>
-            <li style="font-size: 1.2rem; text-align: left;">If the image has a 1 cm scale to be converted to pixels it can be safely resized since you can measure the resized 1cm line and use it.</li>
-            <li style="font-size: 1.2rem; text-align: left;">If the image does not have a 1cm line and you do not have a saved value for the new resized image resolution, it is recommended not to resize as you will not be able to get a cm to px correct conversion value.</li>
-            <li style="font-size: 1.2rem; text-align: left;">You can use the resize function by dragging the scroll or by clicking a scrollbar position or even use your arrow keys after clicking the scrollbar pointer.</li>
-            <li style="font-size: 1.2rem; text-align: left;">You can also use the zoom mode if you prefer to do so.</li>
-          </ul>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-links">
+      <a href="./contact.html" target="_blank">Contact</a>
+      <a href="./info.html" target="_blank">Information page</a>
+      <a href="https://abcri.pt/" target="_blank">ABC-RI</a>
+      <a href="https://abcri.pt/mngt/" target="_blank">MNGT</a>
+    </div>
+    <p>© MOUSEFRAME. All rights reserved 2022<span id="year"></span><br></p>
+    <div class="footer-logos">
+      <div class="img-one"><img src="../libs/img/Logo_ABCRI.png" alt="ABCRI Logo"></div>
+      <div class="img-two"><img src="../libs/img/Logo_MNGT.png" alt="MNGT Logo"></div>
+    </div>
+  </footer>
+
+  <script type="text/javascript" src="../libs/js/jquery-3.7.1.min.js"></script>
+  <script type="text/javascript" src="../libs/js/canvas_idea.js"></script>
+  <script type="text/javascript" src="../libs/js/xlsx-full.min.js"></script>
+  <script type="text/javascript" src="../libs/js/effects.js"></script>
+  <script type="text/javascript" src="../libs/js/notices_updates_modal.js"></script>
+  <script type="text/javascript" src="../libs/js/jquery.modal.min.js"></script>
+  <script type="text/javascript" src="../libs/js/bootstrap.bundle.min.js"></script>
+  <script type="text/javascript" src="../libs/js/get-data-year.js"></script>
+  <script type="text/javascript" src="../libs/js/excel-export.js"></script>
+  <script type="text/javascript" src="../libs/js/excel-clipboard.js"></script>
+  <script type="text/javascript" src="../libs/js/data_fetch.js"></script>
+  <script>
+      // Wrap initialization in DOMContentLoaded to ensure elements exist before binding
+      document.addEventListener('DOMContentLoaded', () => {
+          const uploadInput = document.getElementById('uploadImage');
+          const uploadButton = document.querySelector('.upload-btn');
+          const resetInputButton = document.querySelector('.reset-button');
+
+          if(uploadInput && uploadButton) {
+              uploadInput.addEventListener('change', loadFile);
+              uploadButton.addEventListener('click', () => uploadInput.click());
+              resetInputButton.addEventListener('click', resetFile);
+          }
+
+          document.getElementById('redCircleLeft').addEventListener('click', drawRedCircleLeft);
+          document.getElementById('redCircleRight').addEventListener('click', drawRedCircleRight);
+          document.getElementById('blueCircleLeft').addEventListener('click', drawBlueCircleLeft);
+          document.getElementById('blueCircleRight').addEventListener('click', drawBlueCircleRight);
+          document.getElementById('toggleInactive').addEventListener('click', toggleInactive);
+          document.getElementById('resetCanvas').addEventListener('click', resetCanvas);
+          document.getElementById('removePoint').addEventListener('click', removeChosenPoint);
+          document.getElementById('replacePoint').addEventListener('click', replaceChosenPoint);
+          document.getElementById('deleteAllCircleRedLeft').addEventListener('click', removeAllRedCircleLeft);
+          document.getElementById('deleteAllCircleRedRight').addEventListener('click', removeAllRedCircleRight);
+          document.getElementById('deleteAllCircleBlueLeft').addEventListener('click', removeAllBlueCircleLeft);
+          document.getElementById('deleteAllCircleBlueRight').addEventListener('click', removeAllBlueCircleRight);
+          document.getElementById('changeS').addEventListener('click', changeSize);
+          document.getElementById('resetS').addEventListener('click', resetSize);
+          document.getElementById('measureButton').addEventListener('click', drawMeasureCircle);
+          document.getElementById('resetMeasure').addEventListener('click', removeAllMeasurePoints);
+          document.getElementById('measureDistance').addEventListener('click', distanceMeasurePoint);
+          document.getElementById('manualUse').addEventListener('click', manualInputMeasure);
+          document.getElementById('resetManual').addEventListener('click', resetInput);
+          document.getElementById('removeTableIdButton').addEventListener('click', removeTableID);
+          document.getElementById('addAll').addEventListener('click', addEntriesAll);
+          document.getElementById('addAllAverage').addEventListener('click', addEntriesAllAverage);
+          document.getElementById('removeEntry').addEventListener('click', removeEntry);
+          document.getElementById('removeAllEntries').addEventListener('click', removeAllEntries);
+          document.getElementById('removeByMeasurementButton').addEventListener('click', removeByMeasurement);
+
+          document.getElementById('saveDistance').addEventListener('keypress', event => {
+              if (!/[0-9.]/.test(event.key)) event.preventDefault();
+          });
           
-          <span style="color:red;"><b>&#9888;</b></span> <b><u>Caution:</u></b>&nbspAny data in the table below will be removed along with the dots marked in the image when resizing!</p>
-        </div>
-        <div class="slider-container">
-        <input type="range" min="1" max="100" value="100" id="mySlider" class="slider" style="padding:0;">
-        </div>
-        <!-- <button id="seventyFiveP" onclick="resizeSF();">75% Size</button>
-        <button id="fiftyP" onclick="resizeFifty();">50% Size</button>
-        <button id="fortyP" onclick="resizeForty();">40% Size</button>
-        <button id="twentyFiveP" onclick="resizeTwentyF();">25% Size</button>
-        <button id="resetImgDim" onclick="resetImgDim();">&#x21ba;</button><br><br> -->
-        <p id="currentImgSize" name="image_size"></p>
-        <!-- <br><br><h3>Image resizing slider:</h3>
-        <input type="range" min="1" max="20" value="1" class="slider" id="Slider">
-        <p><output id="value"></output></p> -->
-       </div>  
-      
-       <!--- BREAK-->
-       <div id="accordion">
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="headingOne">
-            <!-- <h5 class="mb-0"> -->
-              <button id="btnLinkOne" class="accordion-button collapsed" type=button data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                Mark/Draw and delete points
-              </button>
-            <!-- </h5> -->
-            </h2>
-
-            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordion">
-              <div class="accordion-body">
-                <div class="buttons-plus-options">
-                  <div class="mouse-scheme">
-                   <img class="mouse-image" src="../libs/img/mouse-scheme-new.png" title="Mouse (dorsal, anatomical position) from biorender.com">
-                   <button class="marker" type="button" id="redCircleLeft" onclick="drawRedCircleLeft();">L</button>
-                   <!-- <button class="button" type="button" id="deleteCircleRedLeft" onclick="removeRedCircleLeft();">Delete last added left red dot</button>
-                   <button class="button" type="button" id="deleteAllCircleRedLeft" onclick="removeAllRedCircleLeft();">Delete all left red dots</button><br> -->
-                   <button class="marker" type="button" id="redCircleRight" onclick="drawRedCircleRight();">R</button>
-                   <!-- <button class="button" type="button" id="deleteCircleRedRight" onclick="removeRedCircleRight();">Delete last added right red dot</button>
-                   <button class="button" type="button" id="deleteAllCircleRedRight" onclick="removeAllRedCircleRight();">Delete all right red dots</button><br> -->
-                   <button class="marker" type="button" id="blueCircleLeft" onclick="drawBlueCircleLeft();">L</button>
-                   <!-- <button class="button" type="button" id="deleteCircleBlueLeft" onclick="removeBlueCircleLeft();">Delete last added left blue dot</button>
-                   <button class="button" type="button" id="deleteAllCircleRedLeft" onclick="removeAllBlueCircleLeft();">Delete all left blue dots</button><br> -->
-                   <button class="marker" type="button" id="blueCircleRight" onclick="drawBlueCircleRight();">R</button>
-                   <!-- <button class="button" type="button" id="deleteCircleBlueRight" onclick="removeBlueCircleRight();">Delete last added right blue dot</button>
-                   <button class="button" type="button" id="deleteAllCircleBlueRight" onclick="removeAllBlueCircleRight();">Delete all right blue dots</button><br> -->
-                   <!-- <button class="button" type="button" id="resetCanvasNotIdx" onclick="clearCanvas()">Clear Canvas</button> -->
-                   <div class="btn-toggle">Pause all:&nbsp<button class="btn-tg" type="button" id="toggleInactive" onclick="toggleInactive();"><i class="fa-solid fa-circle-stop"></i></button></div>
-                   <div class="btn-reset">Reset all:&nbsp<button class="btn-rs" type="button" id="resetCanvas" onclick="resetCanvas();"><i class="fa-solid fa-eraser"></i></button></div>
-                   <div class="hotkeys-legend">
-                    <div style="margin-bottom:5px; font-weight: bold;"><i class="fa-solid fa-keyboard"></i>&nbspshortcuts:</div>
-                    <div><img src="../libs/img/letter-q.png">: Red L</div>
-                    <div><img src="../libs/img/letter-w.png">: Red R</div>
-                    <div><img src="../libs/img/letter-a.png">: Blue L</div>
-                    <div><img src="../libs/img/letter-s.png">: Blue R</div>
-                    <div><img src="../libs/img/letter-r.png">: Reset all</div>
-                    <div><img src="../libs/img/letter-p.png">: Pause all</div>
-                   </div>
-                   <div class="under-image">Mouse scheme information <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#otherInfo"><i class="fa-solid fa-circle-info"></i></button>: </div>
-                   <div class="collapse" style="width:366px;" id="otherInfo">
-                    <ul>
-                      <li style="margin-top: 10px;">You can activate button function by either clicking the respective button in each of the mouse's paws or by using a keyboard shortcut referenced above</li>
-                      <li style="margin-top: 10px;">The "Pause all" button/function will stop any ongoing function to add points</li>
-                      <li style="margin-top: 10px;">The "Reset all" button/function will clear all your points in your selected image above, in simple terms it will reset all your work done above</li>
-                    </ul>
-                    <p style="font-size: 1em;">Mouse image adapted from:</p>
-                    <a href='https://www.biorender.com/'><img src="../libs/img/bio-render.png" style="width:254px; height: 251px; cursor:pointer;"></a><br>
-                    
-                    </div>
-                   </div>
-                   <div class="right-side-options">
-                    <div class="info-active-function" id="activeFunction"></div>
-                   <div class="point-removal">
-                   <h4>Remove a point of choice&nbsp<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRemovePointHelp"><i class="fa-solid fa-circle-info"></i></button>:</h4>
-                  <div style="font-size: 0.9em;" class="collapse" id="collapseRemovePointHelp">
-                  <p>Instructions for manual removal:</p>
-                   <ul>
-                    <li>Your points appear below as you add them.</li>
-                    <li>Select your desired point and two options for removal will appear:<ul><li><u>Remove:</u> Delete the point and update the count without the removed point.</li>
-                    <li><u>Replace:</u> Remove the point, but it requires a single new point input by the user to use as replacement (many buttons will be disabled when the replacing function is active). </li></ul></li>
-                   </ul>
-                  </div>
-                   <!-- <button id="refreshButton" onclick="refreshRemoveList();"><i class="fa-solid fa-arrows-rotate"></i></button>
-                   <button id="emptyListRemoval" onclick="emptyRemoveList();"><i class="fa-solid fa-trash"></i></button> -->
-                   <label for="selectPoint">Add points, see them here <i class="fa-solid fa-right-long"></i>&nbsp</label><select id="selectPoint" class="custom-select">
-                   </select>
-                   &nbsp<button id="removePoint" onclick="removeChosenPoint();">Remove</button>
-                   <button id="replacePoint" onclick="replaceChosenPoint();">Replace</button>
-                  </div>
-                  <div class="group-removal">
-                  <h4 style="border-top-style: double; padding-top: 10px;">Remove a group of points:&nbsp<button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRemoveGroupHelp"><i class="fa-solid fa-circle-info"></i></button>:</h4>
-                  <div style="font-size: 0.9em;" class="collapse" id="collapseRemoveGroupHelp">
-                    <p>Information for group removal:</p>
-                     <ul>
-                      <li>As an alternative to removing or replacing a point you can also remove an entire group of points. They are divided in 4 groups:<ul>
-                        <li>Red left</li>
-                        <li>Red right</li>
-                        <li>Blue left</li>
-                        <li>Blue right</li></ul>
-                      </li>
-                      <li>The points will be removed from the image by simply clicking one of the four buttons below.</li>
-                     </ul>
-                    </div>
-                    <div class="remove-groups">
-                    <div class="red-remove-points">
-                    <button class="button" type="button" id="deleteAllCircleRedLeft" onclick="removeAllRedCircleLeft();">Delete Red L group</button>
-                    <button class="button" type="button" id="deleteAllCircleRedRight" onclick="removeAllRedCircleRight();">Delete Red R group</button>
-                    </div>
-                    <div class="blue-remove-points">
-                    <button class="button" type="button" id="deleteAllCircleBlueLeft" onclick="removeAllBlueCircleLeft();">Delete Blue L group</button>
-                    <button class="button" type="button" id="deleteAllCircleBlueRight" onclick="removeAllBlueCircleRight();">Delete Blue R group</button>
-                    </div>
-                    </div>
-                    </div>
-                    <div class="point-size">
-                    <h2 style="font-size: 1.5rem;">Change dimensions of your marking points:</h2>
-                    <input id="sizeInput" type="number" placeholder="Point size in px..." style="width:100px;">
-                    <button id="changeS" onclick="changeSize();">Change</button>
-                    <button id="resetS" onclick="resetSize();"><i class="fa-solid fa-rotate-left"></i></button>
-                    <p> Default point radius size is set to 4px</p>
-                    <p id="dynamicSize"></p>
-                    <p><strong>Note:</strong>&nbspWhen deleting buttons make sure you don't change radius size. Only delete points when working with a fixed size</p>
-                    </div>
-                  </div>
-                 </div>
-              </div>
-            </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="headingTwo">
-            <!-- <h5 class="mb-0"> -->
-              <button id="btnLinkTwo" class="accordion-button collapsed" type=button data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                Measure how many pixels in a centimeter
-              </button>
-            <!-- </h5> -->
-            </h2>   
-          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordion">
-            <div class="accordion-body">
-              <div class="saved-distances" id="savedDistance">
-                <h4>Define how many pixels are in a centimeter:</h3>
-                <h5 style="padding-top: 10px;">1. Measuring the 1cm (optional according to availability)</h5>
-                <ul>
-                <li>If there is a drawn line with the length of 1cm, measure it in pixels here by clicking "+" below.</li>
-                <li>The "+" button activates the function to add two new points to the image above, delimiting the 1cm line in it.</li>
-                <li>After adding to points delimiting the 1cm line, click the ruler icon to measure that distance in pixels.</li>
-                <li style="margin-bottom: 10px;">The result will appear below.</li>
-                </ul>
-                <p id="addMeasureInfo"></p>
-                <!-- <p id="scaleDistance"></p> -->
-                <button id="measureButton" class="measure" onclick="drawMeasureCircle();"><i class="fa-solid fa-plus"></i></button>
-                <button id="resetMeasure" onclick="removeAllMeasurePoints();"><i class="fa-solid fa-eraser"></i></button>
-                <button onclick = "distanceMeasurePoint()" id="measureDistance"><i class="fa-solid fa-ruler"></i></button>
-                <h5 style="padding-top: 10px;">2. Manually input a value or use previous saved values</h5>
-                <p>Manually input known value of pixels in 1 cm or use saved values (choose only one of the options and click use):</p>
-                <input id="pixelsInCmMan" type="number" pattern="^\d+(\.\d+)*$" onKeyPress="if(this.value.length==8) return false;" placeholder="Px in cm...">&nbspOR&nbsp
-                <select id="savedChoices" form="savedDistancesForm" class="custom-select">
-                    <option value="None" disabled selected>Select a value</option>
-                    <option id="{{forloop.counter}}" value="{{distance.conversion_value}}"></option>
-                  
-                </select>
-                <button onclick="manualInputMeasure();" id="manualUse">Use</button>
-                <button onclick="resetInput();" id="resetManual"><i class="fa-solid fa-rotate-left"></i></button>
-                <!-- <button id="removeOption" type="submit">Delete</button> -->
-                <h5 style="padding-top: 10px;">Measurement result</h5>
-                <div class="measure-info"><div id="measureIntro">Value:</div>&nbsp&nbsp<input id="measureToCm" value="" size="5" readonly>px equals 1 cm.</div>
-                <h4 style="font-size: 1.5em; border-top: 2px solid rgba(0,0,0,.125) !important; padding-top: 20px;">Save section</h4>
-                <p>If you have a value you want to save, use the fields below to add the value in pixels and the size of the image you took the value from (both fields are required to save).</p>
-                <p style="font-size: 1em"><b><i class="fa-solid fa-triangle-exclamation"></i>&nbspImportant:</b> Saving both these values allows for better practice and prevents the usage of such values in different sized images which is not correct.</p>
-                <form action="saved" method="POST" id="savedDistancesForm">
-                  <ol>
-                    <li>Value(px):
-                      <input type="text" name="saved_distance_value" id="saveDistance" onkeypress="return /[0-9.]/i.test(event.key)" maxlength="8" placeholder="Save value..." required></li>
-                    <li>Image size in which the value is being saved: <input type="text" name="image_size" id="imgSizeInfo" maxlength="10" onkeypress="return /[0-9.x]/i.test(event.key)" placeholder="E.g. 1920x1080" required></li>
-                  </ol>
-                  <button class="save-button" id="saveDistanceButton" type="submit"><i class="fa-solid fa-floppy-disk"></i></button> 
-                </form>
-                <div id="messageSave"></div>
-               </div>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingThree">
-              <button class="accordion-button collapsed" type=button data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                Data management
-              </button>
-            </h2>
-          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordion">
-            <div class="accordion-body">
-              <div class="data-management" id="showData">
-                <div class="table-section">
-                <div class="table-results">
-                <h3 style="text-decoration: underline;">Data results Table</h3>
-                <table id="table">
-                  <thead id="tableH">
-                  <tr>
-                    <td colspan="5" id="titleImage"><b>Table ID: </b></td>
-                  </tr>
-                  <tr id="idRow">
-                    <th>Entry Number</th>
-                    <th>Points</th>
-                    <th>Measurement type</th>
-                    <th id="valuePx">Value(px)</th>
-                    <th id="valueCm">Value(cm)</th>
-                  </tr>
-                </thead>
-                <tbody id="tbody">
-                </tbody>
-                </table>
-                <div id="imageResizeTableWarning"></div>
-              </div><br>
-              <label for="excel-file"><i class="fa-solid fa-circle-info"></i> Add an excel file to add your table to one of your own excel files (the table is added in a new sheet) and then click the export button below.</label>
-              <input class="input-excel" name="excel-file" type="file" id="upload-excel" accept=".xlsx, .xls" /><button id="resetUpload">Remove</button><br><br>
-              <label for="button-export"><i class="fa-solid fa-circle-info"></i> Simply click the below button, without any provided, excel to export your table to a new excel file with the table name provided on the right.</label><br>
-              <button name="button-export" id="exportEx"> Export to excel file </button><br><br>
-              <label for="copy-table"><i class="fa-solid fa-circle-info"></i> Copy the table and add it to a file of your preference.</label><br>
-              <button name="copy-table" id="copyTable">Copy Table to Clipboard</button>
-            </div>
-              <div class="select-options">
-                  <h4 style="text-align: center;">Table management options</h4>
-                  <div class="table-id">
-                    <!-- <button onclick="updateTableID()"><i class="fa-solid fa-check"></i></button> -->
-                    <p>1. Insert table ID:</p>
-                    <div class="entry-table-id">
-                      <input id="entryTableID" placeholder="Enter an ID for table">&nbsp<button onclick="removeTableID();"><i class="fa-solid fa-rotate-left"></i></button>
-                    </div>
-                  </div>
-                  <div id="footstepsBeginning">
-                  <label for="beginning">2. First set of footsteps:</label>
-                  <select name="beginning" id="footstepStart" class="custom-select">
-                    <option value="None" selected>Select one</option>
-                    <option value="Left">Left</option>
-                    <option value="Right">Right</option>
-                  </select><br>
-                  <section class="modal-help-ae" id="modalHelpAddEntries">
-                    <h2 style="margin-bottom:20px;"><b><u>Help</u></b> - What does Add Entries option do?</h2>
-                    <ul>
-                      <li>&#x27A3; &nbsp This function allows users to calculate distances between the points marked above.</li>
-                      <li>&#x27A3; &nbsp In contrast with the "Add entries with average" function, this option does not require the pixels in 1 cm measurement (if the value is available it will still convert px to cm). If the user only wants to know the distance in pixels this option may suffice.</li>
-                      <li>&#x27A3; &nbsp This function does not require a full set of marked dots to perform all available measurements, but it will throw an alert that some measurements could not be measured for the lack of certain dots.</li>
-                      <li>&#x27A3; &nbsp Overall, this measurement type is less sensitive and great for when the user only wants a few set of measurements and not all.</li>
-                    </ul>
-                    <btn class="new-btn-close-modal" id="closeModalHelpAddEntries">Close</btn>
-                  </section>
-                  <section class="modal-help-aea" id="modalHelpAddEntriesAverage">
-                    <h2 style="margin-bottom:20px;"><b><u>Help</u></b> - What does Add Entries with Average do?</h2>
-                    <ul>
-                      <li>&#x27A2; &nbsp This function calculates a complete set of measurements, converts the values to cm and displays mean values for each measurement in cm.</li>
-                      <li>&#x27A2; &nbsp "Add entries with average" requires the px in 1 cm measurement beforehand.</li>
-                      <li>&#x27A2; &nbsp It also needs all marked dots in the correct spots to perform all the available calculations.</li>
-                      <li>&#x27A2; &nbsp This method/function is the most complete and sensitive when it comes to data retrieval.</li>
-                    </ul>
-                    <btn class="new-btn-close-modal" id="closeModalHelpAddEntriesAverage">Close</btn>
-                  </section>
-                  <div class="add-buttons">
-                  <div class="add-all-block">
-                    <button id="addAll" type="submit" onclick="addEntriesAll()">Add Entries</button><button id="openAe" type="button"><i class="fa-solid fa-circle-question"></i></button>
-                  </div>
-                  <div class="add-all-average-block">
-                    <button id="addAllAverage" type="submit" onclick="addEntriesAllAverage()">Add Entries with average</button><button id="openAea" type="button"><i class="fa-solid fa-circle-question"></i></button>
-                  </div><br>
-                  </div>
-                  </div>
-                  <!-- <input type="submit" onclick="addEntry();" value="Add Entries"><br> -->
-                  <!-- <br><p id="entryPreview"></p> -->
-                  <!-- <button id="refreshList" onclick="refreshList();">Refresh</button>
-                  <button id="empty" onclick="emptyList();">Empty</button> -->
-                  <div class="remove-by-entries" id="removeByEntries">
-                  <h5>Removal section:</h5>
-                  <p>Remove by entry number or remove all &#8628;</p>
-                  <input id="entryNumber" placeholder="Entry nº" size="3" maxlength="3">
-                  <button id="removeEntry" onclick="removeEntry();"><i class="fa-solid fa-xmark"></i></button>
-                  <button id="removeAllEntries" onclick="removeAllEntries();">Delete all &nbsp<i class="fa-solid fa-trash"></i></button>
-                  </div>
-                  <div class="remove-by-measurement" id="removeByMeasurement">
-                  <p>Remove by measurement type &#8628;</p>
-                  <select name="measurement" id="removeMeasurement" class="custom-select">
-                    <option value="Overlap Left" selected>Overlap Left</option>
-                    <option value="Overlap Right" selected>Overlap Right</option>
-                    <option value="Stride length left front">Stride length left front</option>
-                    <option value="Stride length left hind">Stride length left hind</option>
-                    <option value="Stride length right front">Stride length right front</option>
-                    <option value="Stride length right hind">Stride length right hind</option>
-                    <option value="Stride Width Front">Stride Width Front</option>
-                    <option value="Stride Width Hind">Stride Width Hind</option>
-                  </select>
-                  <button onclick="removeByMeasurement();">Remove</button>
-                  </div>
-              </div>
-          </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      </div>
-  </div>
-</div>
-<footer>
-  
-  <div class="footer-links">
-    <a onclick="handleNavigation('./contact.html')">Contact</a>
-    <a onclick="handleNavigation('./info.html')">Information page</a>
-    <a href='https://abcri.pt/' target="_blank">ABC-RI</a>
-    <a href='https://abcri.pt/mngt/' target="_blank">MNGT</a>
-  </div>
-  <p>© MOUSEFRAME. All rights reserved 2022<span id="year"></span><br></p>
-  <div class="footer-logos">
-    <div class="img-one"><img src="../libs/img/Logo_ABCRI.png" alt=""></div>
-    <div class="img-two"><img src="../libs/img/Logo_MNGT.png" alt=""></div>
-  </div>
-</footer>
-   <!-- </div> -->
-<script type="text/javascript" src="../libs/js/jquery-3.7.1.min.js"></script>
-<script type="text/javascript" src="../libs/js/canvas_idea.js"></script>
-<script type="text/javascript" src="../libs/js/xlsx-full.min.js"></script>
-<script type="text/javascript" src="../libs/js/effects.js"></script>
-<script type="text/javascript" src="../libs/js/version.js"></script>
-<script type="text/javascript" src="../libs/js/notices_updates_modal.js"></script>
-<script type="text/javascript" src="../libs/js/js-cookie.js"></script>
-<script type="text/javascript" src="../libs/js/jquery.modal.min.js"></script>
-<script type="text/javascript" src="../libs/js/bootstrap.bundle.min.js"></script>
-<script type="text/javascript" src="../libs/js/get-data-year.js"></script>
-<script type="text/javascript" src="../libs/js/excel-export.js"></script>
-<script type="text/javascript" src="../libs/js/excel-clipboard.js"></script>
-<script type="text/javascript" src="../libs/js/ajax.js"></script>
+          document.getElementById('imgSizeInfo').addEventListener('keypress', event => {
+              if (!/[0-9.x]/i.test(event.key)) event.preventDefault();
+          });
+          
+          const manualPxInput = document.getElementById('pixelsInCmMan');
+          manualPxInput.addEventListener('keypress', event => {
+              if (manualPxInput.value.length >= 8) event.preventDefault();
+          });
+      });
+  </script>
 </body>
 </html>

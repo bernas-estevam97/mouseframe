@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
+const fs = require('fs');
 const { autoUpdater } = require('electron-updater');
 
 let mainWindow;
@@ -125,4 +126,51 @@ ipcMain.handle('showNavigationWarning', async () => {
 ipcMain.handle('force-close', (event) => {
   const win = BrowserWindow.fromWebContents(event.sender);
   if (win) win.close();
+});
+
+ipcMain.handle('openExternal', (event, url) => {
+  shell.openExternal(url); 
+});
+
+
+// --- LOCAL STORAGE SYSTEM --- //
+// Get the safe user data path provided by the OS
+const userDataPath = app.getPath('userData');
+const dataFilePath = path.join(userDataPath, 'saved_distances.json');
+
+// Helper function to read the data
+function readData() {
+  try {
+    if (!fs.existsSync(dataFilePath)) {
+      fs.writeFileSync(dataFilePath, JSON.stringify([])); // Create empty array if file doesn't exist
+      return [];
+    }
+    const data = fs.readFileSync(dataFilePath, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading data:', error);
+    return [];
+  }
+}
+
+// IPC Handler: Send data to frontend when requested
+ipcMain.handle('get-saved-distances', () => {
+  return readData();
+});
+
+// IPC Handler: Save new data from frontend
+ipcMain.handle('save-distance', (event, newEntry) => {
+  try {
+    const data = readData();
+    // Create a unique ID for the entry
+    newEntry.id = Date.now().toString(); 
+    data.push(newEntry);
+    
+    // Write the updated array back to the file securely
+    fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
+    return { success: true, data: data };
+  } catch (error) {
+    console.error('Error saving data:', error);
+    return { success: false, error: error.message };
+  }
 });

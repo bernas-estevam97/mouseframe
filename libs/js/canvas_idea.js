@@ -652,30 +652,39 @@ let inputPixelsManually = document.getElementById("pixelsInCmMan");
 let savedChoices = document.getElementById("savedChoices");
 
 function manualInputMeasure() {
-  if (
-    inputPixelsManually.value != "" &&
-    savedChoices.options[savedChoices.selectedIndex].value == "None"
-  ) {
-    dist = inputPixelsManually.value;
-    savedChoices.value = "None";
-    document.getElementById("measureToCm").value =
-      parseFloat(dist);
+  const manualVal = inputPixelsManually.value;
+  const dropdownVal = savedChoices.value; // Modern, cleaner way to get the selected value
+
+  // Case 1: The user accidentally filled out both options
+  if (manualVal !== "" && dropdownVal !== "None") {
+    alert("Please choose only ONE option: either type a manual value OR select a saved value.");
+    return; // Stop the function here
   }
-  if (
-    savedChoices.options[savedChoices.selectedIndex].value != "None" &&
-    inputPixelsManually.value == ""
-  ) {
-    dist = savedChoices[savedChoices.selectedIndex].value;
-    document.getElementById("measureToCm").value =
-      parseFloat(dist);
+
+  // Case 2: User chose the Manual Input
+  if (manualVal !== "" && dropdownVal === "None") {
+    dist = parseFloat(manualVal);
+    document.getElementById("measureToCm").value = dist;
+  } 
+  
+  // Case 3: User chose the Dropdown
+  else if (dropdownVal !== "None" && manualVal === "") {
+    dist = parseFloat(dropdownVal);
+    document.getElementById("measureToCm").value = dist;
+  } 
+  
+  // Case 4: User clicked "Use" but didn't provide any values
+  else {
+    alert("Please enter a value or select a saved choice before clicking Use.");
   }
 }
 
+// The companion reset function (attached to your 'resetManual' button)
 function resetInput() {
   inputPixelsManually.value = "";
   savedChoices.value = "None";
-  dist = 0;
   document.getElementById("measureToCm").value = "";
+  dist = 0; // Reset your global distance variable
 }
 
 // ------------------------------------------------------------------------------------- -------------------------------------------------------------//
@@ -810,6 +819,7 @@ let imgContainer = document.getElementById("imgContainer");
 let img = new Image();
 let loadFile = function (event) {
   if (event.target.files[0]["type"].split("/")[0] === "image") {
+    hasUnsavedData = true;
     img.src = URL.createObjectURL(event.target.files[0]);
     let blob = img.src;
     imgContainer.style.backgroundImage = "url(" + blob + ")";
@@ -922,16 +932,27 @@ function resizeImageToFitViewport(img) {
 
 // Alert before leaving page 
 
+// 1. Use a state variable instead of checking img.src
+// It is much safer and easier to track.
+let hasUnsavedData = false;
+let isNavigating = false;
+
+/* Important next step for your other functions:
+  Inside your loadFile() function, add: hasUnsavedData = true;
+  Inside your resetFile() function, add: hasUnsavedData = false; 
+*/
+
+// 2. The BeforeUnload Handler (Triggered when closing the app or hitting reload)
 function handleBeforeUnload(event) {
   if (!window.electronAPI || isNavigating) return;
 
-  if (img?.src !== '') {
+  if (hasUnsavedData) {
     event.preventDefault();
-    event.returnValue = ''; // required for Chromium
+    event.returnValue = ''; // Required for Chromium to pause the close process
 
     window.electronAPI.showCloseWarning().then((choice) => {
-      if (choice === 1) {
-        // ✅ Confirmed Quit
+      if (choice === 1) { // Assuming 1 means "Yes, quit"
+        isNavigating = true; 
         window.removeEventListener("beforeunload", handleBeforeUnload);
         window.electronAPI.forceClose();
       } else {
@@ -945,33 +966,54 @@ function handleBeforeUnload(event) {
 
 window.addEventListener("beforeunload", handleBeforeUnload);
 
-
-let isNavigating = false;
-
-function handleNavigation(targetURL) {
-  if (img?.src !== '') {
+// 3. The Navigation Handler (Triggered when clicking links)
+function handleNavigation(targetURL, isExternal) {
+  if (hasUnsavedData) {
     window.electronAPI.showNavigationWarning().then((choice) => {
-      if (choice === 1) {
-        if (targetURL.startsWith('http')) {
-          // 🔗 Open in user's default browser
-          window.electronAPI.openExternal(targetURL);
-        } else {
-          // 🧭 Navigate internally
-          isNavigating = true;
-          window.removeEventListener("beforeunload", handleBeforeUnload);
-          window.location.href = targetURL;
-        }
+      if (choice === 1) { // Assuming 1 means "Yes, leave"
+        executeNavigation(targetURL, isExternal);
       }
     });
   } else {
-    // No unsaved data
-    if (targetURL.startsWith('http')) {
-      window.electronAPI.openExternal(targetURL);
-    } else {
-      window.location.href = targetURL;
-    }
+    // No unsaved data, just go
+    executeNavigation(targetURL, isExternal);
   }
 }
+
+function executeNavigation(targetURL, isExternal) {
+  if (isExternal) {
+    // Open in user's default browser (Chrome, Edge, Safari, etc.)
+    window.electronAPI.openExternal(targetURL);
+  } else {
+    // Navigate internally within the Electron app
+    isNavigating = true;
+    window.removeEventListener("beforeunload", handleBeforeUnload);
+    window.location.href = targetURL;
+  }
+}
+
+// 4. Global Link Interceptor
+// This listens to all clicks on the page, finds if an <a> tag was clicked,
+// stops the default behavior, and routes it through your custom logic.
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.addEventListener('click', (event) => {
+    const link = event.target.closest('a');
+    
+    // If a link was clicked and it has an href
+    if (link && link.getAttribute('href')) {
+      event.preventDefault(); // Stop normal browser navigation
+      
+      const href = link.getAttribute('href');
+      // Determine if it's an external link (starts with http or target="_blank")
+      const isExternal = href.startsWith('http') || link.target === '_blank';
+      
+      // Use the absolute URL if external, otherwise keep the relative path
+      const targetURL = isExternal ? link.href : href; 
+      
+      handleNavigation(targetURL, isExternal);
+    }
+  });
+});
 
 
 
@@ -1462,6 +1504,7 @@ document.addEventListener('keydown', function (e) {
 
 
 let resetFile = function (event) {
+  hasUnsavedData = false;
   imgContainer.style.backgroundImage = "";
   buttons.style.display = "none";
   // results.style.display = "none";
